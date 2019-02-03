@@ -15,8 +15,16 @@ int main(int argc, char* argv[])
 	SDL_RenderPresent(renderer);
 
 
+
+	//Other logic below.
+
+
+
+
 	//test
 	TestMakePlayer(renderer);
+
+
 
 
 	return 0;
