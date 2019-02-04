@@ -143,6 +143,7 @@ void ConstructPaths(Matrix & map, coord player, std::vector<Enemy>& enemies)
 	distance++;
 
 	std::unordered_set <coord> used;
+	std::unordered_set <Enemy*> updated;
 
 
 	std::queue<coord> que;
@@ -169,8 +170,9 @@ void ConstructPaths(Matrix & map, coord player, std::vector<Enemy>& enemies)
 		{
 			for (auto &enemy : enemies)
 			{
-				if (neighbour == enemy.GetCoord())
+				if (!enemy.IsUpToDate() && neighbour == enemy.GetCoord())
 				{
+
 					LeeMatrix[neighbour.y][neighbour.x] = distance;
 					
 					std::queue<coord> path;

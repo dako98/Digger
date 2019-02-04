@@ -3,6 +3,7 @@
 Enemy::Enemy(int x, int y, Matrix *map)
 	:map(map)
 	, currentCell(x, y)
+	, knowsRoute(false)
 {}
 
 void Enemy::Print(SDL_Renderer *renderer, SDL_Texture* texture) const
@@ -76,9 +77,15 @@ coord Enemy::GetCoord() const
 	return currentCell;
 }
 
+bool & Enemy::IsUpToDate()
+{
+	return knowsRoute;
+}
+
 void Enemy::UpdateRoute(std::queue<coord>& newRoute)
 {
 	routeToPlayer = newRoute;
+	knowsRoute = true;
 }
 
 Enemy::~Enemy()
