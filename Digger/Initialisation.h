@@ -33,7 +33,7 @@ int TestMakePlayer(SDL_Renderer* renderer)
 	SDL_RenderPresent(renderer);
 
 
-	SDL_Delay(3'000);
+//	SDL_Delay(3'000);
 
 	return 0;
 }

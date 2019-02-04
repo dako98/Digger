@@ -8,23 +8,25 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Constants.h"
 
 
-void LoadImage(SDL_Renderer* renderer, std::vector<SDL_Texture*> &store,
-				std::string &path, int ID)
+
+class TextureManager
 {
-	if (store[ID] == nullptr)
-	{
+public:
+	TextureManager(SDL_Renderer* renderer);
 
-		store[ID] = IMG_LoadTexture(renderer, path.c_str());
-
-		if (store[ID] == nullptr)
-			std::cerr << "Could not load image \"" << path << "\".\n";
-		return;
-	}
-}
+	SDL_Texture* GetTexture(Textures id) const;
 
 
+	~TextureManager();
+
+private:
+
+	std::array<SDL_Texture*, Textures::COUNT> store;
+
+};
 
 
 #endif // !_RESOURCE_LOADER_
