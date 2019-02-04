@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-Enemy::Enemy(int x, int y, Matrix * map)
+Enemy::Enemy(int x, int y, Matrix *map)
 	:map(map)
 	, currentCell(x, y)
 {}
@@ -74,4 +74,14 @@ void Enemy::Advance(int steps)
 coord Enemy::GetCoord() const
 {
 	return currentCell;
+}
+
+void Enemy::UpdateRoute(std::queue<coord>& newRoute)
+{
+	routeToPlayer = newRoute;
+}
+
+Enemy::~Enemy()
+{
+
 }

@@ -2,6 +2,8 @@
 #define _CONSTANTS_
 
 #include <array>
+#include <bitset>
+#include <vector>
 
 const int WINDOW_WIDTH = 640;
 const int WINDOW_HEIGHT = 480;
@@ -131,6 +133,8 @@ struct std::hash<coord>
 
 
 const int MOVEMENT_STEPS = 100;
+
+using Matrix = std::vector<std::vector<std::bitset<BITS_IN_CELL>>>;
 
 
 #endif // !_CONSTANTS_

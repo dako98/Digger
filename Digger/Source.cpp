@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 	TestMakePlayer(renderer);
 
 	Field field(renderer);
-
+	field.Update();
 	field.Print(renderer);
 
 

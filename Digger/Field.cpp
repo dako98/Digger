@@ -3,6 +3,7 @@
 
 Field::Field(SDL_Renderer* renderer)
 	:textures(renderer)
+	, Player(5, 5)
 {
 	grid.resize(CELLS_IN_COL);
 	for (auto &row : grid)
@@ -26,6 +27,9 @@ Field::Field(SDL_Renderer* renderer)
 
 	RandomDFS(grid, 20, 5, 5);
 	monsterSpawner = FarthestCell(grid, coord(5, 5));
+
+	enemies.push_back(Enemy(8, 6, &grid));
+
 }
 
 void Field::Print(SDL_Renderer * renderer) const
@@ -143,6 +147,13 @@ void Field::Print(SDL_Renderer * renderer) const
 
 	SDL_RenderPresent(renderer);
 }
+
+void Field::Update()
+{
+	ConstructPaths(grid, Player, enemies);
+}
+
+
 
 Field::~Field()
 {

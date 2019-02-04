@@ -7,9 +7,10 @@
 
 #include "Constants.h"
 #include "ResourceLoader.h"
+#include "Enemy.h"
 
 
-using Matrix = std::vector<std::vector<std::bitset<BITS_IN_CELL>>>;
+//using Matrix = std::vector<std::vector<std::bitset<BITS_IN_CELL>>>;
 
 
 class Field
@@ -18,7 +19,7 @@ public:
 	Field(SDL_Renderer* renderer);
 
 	void Print(SDL_Renderer* renderer) const;
-
+	void Update();
 
 
 
@@ -34,9 +35,10 @@ private:
 
 	coord monsterSpawner;
 	std::vector<Enemy> enemies;	//TODO
-
-	coord Player(5, 5);
 //	std::vector<Bag> bags;		//TODO
+
+
+	coord Player;
 
 
 };

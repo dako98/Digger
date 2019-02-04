@@ -128,12 +128,12 @@ coord FarthestCell(Matrix &map, coord begin)
 
 void ConstructPaths(Matrix & map, coord player, std::vector<Enemy>& enemies)
 {
-	int distance = 0;
+	int distance = 1;
 
 	std::vector<std::vector<int>> LeeMatrix;
 
 	LeeMatrix.resize(map.size());
-	int rowSize = map[0].size;
+	int rowSize = map[0].size();
 
 	for (auto & row : LeeMatrix)
 		row.resize(rowSize);
@@ -167,11 +167,12 @@ void ConstructPaths(Matrix & map, coord player, std::vector<Enemy>& enemies)
 
 		for (auto &neighbour : neighbours)
 		{
-			LeeMatrix[neighbour.y][neighbour.x] = distance;
 			for (auto &enemy : enemies)
 			{
 				if (neighbour == enemy.GetCoord())
 				{
+					LeeMatrix[neighbour.y][neighbour.x] = distance;
+					
 					std::queue<coord> path;
 					Backtrack(LeeMatrix, neighbour, player, path);
 					enemy.UpdateRoute(path);
@@ -180,6 +181,7 @@ void ConstructPaths(Matrix & map, coord player, std::vector<Enemy>& enemies)
 
 			if (used.find(neighbour) == used.end())
 			{
+				LeeMatrix[neighbour.y][neighbour.x] = distance;
 				que.push(neighbour);
 			}
 		}
@@ -194,7 +196,7 @@ void Lee(Matrix &map, coord begin, coord target, std::queue<coord> &path)
 	std::vector<std::vector<int>> LeeMatrix;
 
 	LeeMatrix.resize(map.size());
-	int rowSize = map[0].size;
+	int rowSize = map[0].size();
 
 	for (auto & row : LeeMatrix)
 		row.resize(rowSize);
@@ -253,19 +255,26 @@ void Backtrack(std::vector<std::vector<int>> &LeeMatrix, coord begin, coord targ
 		path.push(current);
 		current = GetPrevious(LeeMatrix, current);
 	}
+	path.push(current);
 }
 
 coord GetPrevious(std::vector<std::vector<int>> &LeeMatrix, coord begin)
 {
-	if (LeeMatrix[begin.y][begin.x] - 1 == LeeMatrix[begin.y + 1][begin.x])
-		return coord(begin.y + 1, begin.x);
+	if (begin.y < (LeeMatrix.size() - 1) && 
+		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y + 1][begin.x])
+		return coord(begin.x, begin.y + 1);
 
-	if (LeeMatrix[begin.y][begin.x] - 1 == LeeMatrix[begin.y - 1][begin.x])
-		return coord(begin.y - 1, begin.x);
+	else if (begin.y > 0 && 
+		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y - 1][begin.x])
+		return coord(begin.x, begin.y - 1);
 
-	if (LeeMatrix[begin.y][begin.x] - 1 == LeeMatrix[begin.y][begin.x + 1])
-		return coord(begin.y, begin.x + 1);
+	else if (begin.x < (LeeMatrix[begin.y].size() - 1) && 
+		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y][begin.x + 1])
+		return coord(begin.x + 1, begin.y);
 
-	if (LeeMatrix[begin.y][begin.x] - 1 == LeeMatrix[begin.y][begin.x - 1])
-		return coord(begin.y, begin.x - 1);
+	if (begin.x >0 && 
+		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y][begin.x - 1])
+		return coord(begin.x - 1, begin.y);
+
+	return begin;
 }

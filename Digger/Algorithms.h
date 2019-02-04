@@ -20,7 +20,8 @@ void GetUnvisitedNeighbours(Matrix &map, std::vector<coord> &neightbours, int x,
 void GetNeighbours(Matrix &map, std::vector<coord> &neighbours, int x, int y);
 coord FarthestCell(Matrix &map, coord begin);
 void ConstructPaths(Matrix &map, coord player, std::vector<Enemy> &enemies);
-
+void Backtrack(std::vector<std::vector<int>> &LeeMatrix, coord begin, coord target, std::queue<coord> &path);
+coord GetPrevious(std::vector<std::vector<int>> &LeeMatrix, coord begin);
 
 
 
