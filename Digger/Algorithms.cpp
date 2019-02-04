@@ -24,7 +24,7 @@ void ConnectCells(Matrix &map, coord cell1, coord cell2)
 	}
 }
 
-void GetNeighbours(Matrix &map, std::vector<coord> &neightbours, int x, int y)
+void GetUnvisitedNeighbours(Matrix &map, std::vector<coord> &neightbours, int x, int y)
 {
 	neightbours.erase(neightbours.begin(), neightbours.end());
 	//get all unvisited neighbours
@@ -41,6 +41,25 @@ void GetNeighbours(Matrix &map, std::vector<coord> &neightbours, int x, int y)
 		neightbours.push_back(coord(x, y + 1));
 }
 
+void GetNeighbours(Matrix & map, std::vector<coord>& neightbours, int x, int y)
+{
+	neightbours.erase(neightbours.begin(), neightbours.end());
+
+
+	//get all neighbours
+	if (map[y][x][LEFT_WALL] == 0)
+		neightbours.push_back(coord(x - 1, y));
+
+	if (map[y][x][RIGHT_WALL] == 0)
+		neightbours.push_back(coord(x + 1, y));
+
+	if (map[y][x][TOP_WALL] == 0)
+		neightbours.push_back(coord(x, y - 1));
+
+	if (map[y][x][BOTTOM_WALL] == 0)
+		neightbours.push_back(coord(x, y + 1));
+}
+
 void _RandomDFS(Matrix &map, int debth, int x, int y, bool &done)
 {
 	if (debth <= 0)
@@ -53,7 +72,7 @@ void _RandomDFS(Matrix &map, int debth, int x, int y, bool &done)
 	{
 		std::vector<coord> neightbours;
 
-		GetNeighbours(map, neightbours, x, y);
+		GetUnvisitedNeighbours(map, neightbours, x, y);
 
 
 		//if if got stuck, it will choose a new path
@@ -64,7 +83,7 @@ void _RandomDFS(Matrix &map, int debth, int x, int y, bool &done)
 			ConnectCells(map, coord(x, y), neightbours[direction]);
 
 			_RandomDFS(map, debth - 1, neightbours[direction].x, neightbours[direction].y, done);
-			GetNeighbours(map, neightbours, x, y);
+			GetUnvisitedNeighbours(map, neightbours, x, y);
 		}
 	}
 }
@@ -109,4 +128,39 @@ coord FarthestCell(Matrix &map, coord begin)
 	}
 	//return the last
 	return current;
+}
+
+void ConstructPaths(Matrix & map, coord player, std::vector<Enemy>& enemies)
+{
+	std::unordered_set <coord> used;
+
+
+	std::queue<coord> que;
+
+	que.push(player);
+
+	coord current(player);
+	std::vector<coord> neighbours;
+
+	while (que.size())
+	{
+		current = que.front();
+		que.pop();
+
+		if (used.find(current) != used.end()) continue;
+
+		used.insert(current);
+
+		GetNeighbours(map, neighbours, current.x, current.y);
+
+		//adding available neighbours
+
+		for (const auto &neighbour : neighbours)
+		{
+			if (used.find(neighbour) == used.end())
+			{
+				que.push(neighbour);
+			}
+		}
+	}
 }

@@ -31,6 +31,8 @@ private:
 
 
 	Matrix grid;
+
+	coord monsterSpawner;
 //	std::vector<Enemy> enemies;	//TODO
 //	std::vector<Bag> bags;		//TODO
 

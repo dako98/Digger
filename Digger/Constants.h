@@ -9,11 +9,8 @@ const int WINDOW_HEIGHT = 480;
 const int CELL_WIDTH = 50;
 const int CELL_HEIGHT = 50;
 
-const int VERTICAL_WALL_WIDTH = 10;
-const int VERTICAL_WALL_HEIGTH = 50;
-
-const int HORIZONTAL_WALL_WIDTH = 50;
-const int HORIZONTAL_WALL_HEIGTH = 10;
+const int WALL_WIDTH = 50;
+const int WALL_HEIGTH = 10;
 
 
 //Couldn't make a structure with two structures inside
@@ -56,6 +53,7 @@ enum Textures
 	MISSING_TEXTURE,
 
 	WALL_TEXTURE,
+
 	NORMAL_DIRT_TEXTURE,
 	HARD_DIRT_TEXTURE,
 	NO_DIRT_TEXTURE,
@@ -86,6 +84,14 @@ const std::array<const char* const, Textures::COUNT> TEXTURE_PATHS = {
 	"bag.png",
 	"coins.png",
 	"grave.png"
+};
+
+enum Direction
+{
+	UP,
+	LEFT,
+	DOWN,
+	RIGHT
 };
 
 struct coord

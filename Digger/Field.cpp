@@ -25,6 +25,7 @@ Field::Field(SDL_Renderer* renderer)
 	}
 
 	RandomDFS(grid, 20, 5, 5);
+	monsterSpawner = FarthestCell(grid, coord(5, 5));
 }
 
 void Field::Print(SDL_Renderer * renderer) const
@@ -76,8 +77,8 @@ void Field::Print(SDL_Renderer * renderer) const
 			{
 				wallRect.x = (GAME_FIELD_BEGIN_X + col * CELL_WIDTH);
 				wallRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
-				wallRect.w = HORIZONTAL_WALL_WIDTH;
-				wallRect.h = HORIZONTAL_WALL_HEIGTH;
+				wallRect.w = WALL_WIDTH;
+				wallRect.h = WALL_HEIGTH;
 
 				SDL_RenderSetViewport(renderer, &wallRect);
 				//SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -86,22 +87,28 @@ void Field::Print(SDL_Renderer * renderer) const
 			}
 
 			if (grid[row][col][LEFT_WALL])
-			{
+			{ /*
 				wallRect.x = (GAME_FIELD_BEGIN_X + col * CELL_WIDTH);
 				wallRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
 				wallRect.w = VERTICAL_WALL_WIDTH;
 				wallRect.h = VERTICAL_WALL_HEIGTH;
+				*/
+				wallRect.x = (GAME_FIELD_BEGIN_X + col * CELL_WIDTH);
+				wallRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
+				wallRect.w = WALL_HEIGTH;
+				wallRect.h = WALL_WIDTH;
 
 				SDL_RenderSetViewport(renderer, &wallRect);
+				//SDL_RenderCopy(renderer, texture, NULL, NULL);
 				SDL_RenderCopyEx(renderer, texture, NULL, NULL, 90, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
 			}
 
 			if (grid[row][col][BOTTOM_WALL])
 			{
 				wallRect.x = (GAME_FIELD_BEGIN_X + col * CELL_WIDTH);
-				wallRect.y = (GAME_FIELD_BEGIN_Y + (row + 1) * CELL_HEIGHT - HORIZONTAL_WALL_HEIGTH);
-				wallRect.w = VERTICAL_WALL_HEIGTH;
-				wallRect.h = VERTICAL_WALL_WIDTH;
+				wallRect.y = (GAME_FIELD_BEGIN_Y + (row + 1) * CELL_HEIGHT - WALL_HEIGTH);
+				wallRect.w = WALL_WIDTH;
+				wallRect.h = WALL_HEIGTH;
 
 				SDL_RenderSetViewport(renderer, &wallRect);
 				SDL_RenderCopyEx(renderer, texture, NULL, NULL, 0, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
@@ -109,19 +116,31 @@ void Field::Print(SDL_Renderer * renderer) const
 
 			if (grid[row][col][RIGHT_WALL])
 			{
-				wallRect.x = (GAME_FIELD_BEGIN_X + (col+1) * CELL_WIDTH - VERTICAL_WALL_WIDTH);
-				wallRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
-				wallRect.w = VERTICAL_WALL_WIDTH;
-				wallRect.h = VERTICAL_WALL_HEIGTH;
-
-				SDL_RenderSetViewport(renderer, &wallRect);
-				SDL_RenderCopyEx(renderer, texture, NULL, NULL, 90, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
+//				wallRect.x = (GAME_FIELD_BEGIN_X + (col+1) * CELL_WIDTH - VERTICAL_WALL_WIDTH);
+//				wallRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
+//				wallRect.h = VERTICAL_WALL_WIDTH;
+//				wallRect.w = VERTICAL_WALL_HEIGTH;
+//
+//				SDL_RenderSetViewport(renderer, &wallRect);
+//				SDL_RenderCopyEx(renderer, texture, NULL, NULL, 90, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
 			}
 
 
 
 		}
 	}
+
+	SDL_Rect cellRect;
+	texture = textures.GetTexture(Textures::SPAWNER_TEXTURE);
+
+	cellRect.x = (GAME_FIELD_BEGIN_X + monsterSpawner.x * CELL_WIDTH + WALL_HEIGTH);
+	cellRect.y = (GAME_FIELD_BEGIN_Y + monsterSpawner.y * CELL_HEIGHT + WALL_HEIGTH);
+	cellRect.w = CELL_WIDTH - 2* WALL_HEIGTH;
+	cellRect.h = CELL_HEIGHT - 2* WALL_HEIGTH;
+
+	SDL_RenderSetViewport(renderer, &cellRect);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
+
 	SDL_RenderPresent(renderer);
 }
 

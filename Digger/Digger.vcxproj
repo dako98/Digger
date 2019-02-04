@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="Algorithms.cpp" />
     <ClCompile Include="Algorithms.h" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="ResourceLoader.cpp" />
     <ClCompile Include="Source.cpp" />
