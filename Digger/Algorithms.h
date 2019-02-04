@@ -16,6 +16,7 @@ void _RandomDFS(Matrix &map, int debth, int x, int y, bool &done);
 void RandomDFS(Matrix &map, int debth, int beginX, int beginY);
 void ConnectCells(Matrix &map, coord cell1, coord cell2);
 void GetNeighbours(Matrix &map, std::vector<coord> &neightbours, int x, int y);
+coord FarthestCell(Matrix &map, coord begin, coord &farthest);
 
 
 
@@ -80,42 +81,42 @@ void _RandomDFS(Matrix &map, int debth, int x, int y, bool &done)
 	}
 }
 
-void FarthestCell(Matrix &map, coord begin, coord &farthest)
+coord FarthestCell(Matrix &map, coord begin)
 {
-//	std::unordered_map<coord,bool> used;
 
 	std::unordered_set<coord> used;
 
-	
 
 	std::queue<coord> que;
 
 	que.push(begin);
 
-	coord current;
+	coord current(begin);
+	std::vector<coord> neighbours;
 
 	while (que.size())
 	{
 		current = que.front();
 		que.pop();
 
-		if (used.find(current)!=used.end()) continue;
+		if (used.find(current) != used.end()) continue;
 
 		used.insert(current);
-		
-		std::vector<coord
 
-		//adding available edges
-		int edgesInVertexCount = current->edges.size();
+		GetNeighbours(map, neighbours, current.x, current.y);
 
-		for (int a = 0; a < edgesInVertexCount; a++)
+		//adding available neighbours
+
+		for (const auto &neighbour : neighbours)
 		{
-			if (haveKey(current->edges[a].lock_key, keys))
+			if (used.find(neighbour) == used.end())
 			{
-				que.push(&graph[current->edges[a].destination]);
+				que.push(neighbour);
 			}
 		}
 	}
+	//return the last
+	return current;
 }
 
 #endif // !_ALGORITHMS_

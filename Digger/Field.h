@@ -30,8 +30,8 @@ private:
 
 
 	Matrix grid;
-	std::vector<Enemy> enemies;	//TODO
-	std::vector<Bag> bags;		//TODO
+//	std::vector<Enemy> enemies;	//TODO
+//	std::vector<Bag> bags;		//TODO
 
 
 };

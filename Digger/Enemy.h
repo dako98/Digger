@@ -1,7 +1,6 @@
 #ifndef _ENEMY_
 #define _ENEMY_
 
-#include 
 
 
 class Enemy
