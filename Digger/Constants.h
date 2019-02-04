@@ -115,6 +115,11 @@ static bool operator==(const coord& lhs, const coord& rhs)
 	return lhs.x == rhs.x && lhs.y == rhs.y;
 }
 
+static bool operator!=(const coord& lhs, const coord& rhs)
+{
+	return !(lhs == rhs);
+}
+
 template<>
 struct std::hash<coord> 
 {
@@ -125,7 +130,7 @@ struct std::hash<coord>
 };
 
 
-
+const int MOVEMENT_STEPS = 100;
 
 
 #endif // !_CONSTANTS_

@@ -12,6 +12,7 @@ public:
 
 	void Print(SDL_Renderer *renderer, SDL_Texture* texture) const;
 	void Advance(int steps);
+	coord GetCoord() const;
 
 	void UpdateRoute(std::queue<coord> &newRoute);
 
