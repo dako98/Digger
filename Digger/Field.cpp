@@ -164,33 +164,44 @@ void Field::Update(int direction)
 
 	//	Print();
 
-	switch (direction)
+	if (previousPlayerPos != player.GetCoord())
 	{
-	case UP:
-		ConnectCells(grid, player.GetCoord(), previousPlayerPos);
-		break;
 
-	case LEFT:
-		ConnectCells(grid, player.GetCoord(), coord(player.GetCoord().x - 1, player.GetCoord().y));
+		switch (direction)
+		{
+		case UP:
+			if (player.GetCoord().y >= 0)
+			{
+				ConnectCells(grid, player.GetCoord(), previousPlayerPos);
+			}
+			break;
 
-		break;
-	case DOWN:
-		ConnectCells(grid, player.GetCoord(), coord(player.GetCoord().x, player.GetCoord().y + 1));
+		case LEFT:
+			ConnectCells(grid, player.GetCoord(), previousPlayerPos/*coord(player.GetCoord().x - 1, player.GetCoord().y)*/);
 
-		break;
-	case RIGHT:
-		ConnectCells(grid, player.GetCoord(), coord(player.GetCoord().x + 1, player.GetCoord().y));
+			break;
+		case DOWN:
+			ConnectCells(grid, player.GetCoord(), previousPlayerPos/*coord(player.GetCoord().x, player.GetCoord().y + 1)*/);
 
-		break;
-	case INVALID_DIRECTION:
-		break;
-	default:
-		break;
+			break;
+		case RIGHT:
+			ConnectCells(grid, player.GetCoord(), previousPlayerPos/*coord(player.GetCoord().x + 1, player.GetCoord().y)*/);
+
+			break;
+		case INVALID_DIRECTION:
+			break;
+		default:
+			break;
+		}
 	}
 
 	if (previousPlayerPos != player.GetCoord())
 	{
-		previousPlayerPos = player.GetCoord();
+
+	std::cout << "Player current cell: x=" << player.GetCoord().x << " y=" << player.GetCoord().y << '\n';
+	std::cout << "Player previous cell: x=" << previousPlayerPos.x << " y=" << previousPlayerPos.y << '\n';
+		
+	previousPlayerPos = player.GetCoord();
 
 		for (auto &enemy : enemies)
 			enemy.IsUpToDate() = false;
@@ -200,7 +211,7 @@ void Field::Update(int direction)
 
 
 	for (auto &enemy : enemies)
-		enemy.Advance(1);
+		enemy.Advance(ENEMY_STEP);
 
 	Print();
 

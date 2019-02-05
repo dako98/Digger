@@ -12,12 +12,14 @@ const int CELL_WIDTH = 50;
 const int CELL_HEIGHT = 50;
 
 const int WALL_WIDTH = CELL_WIDTH;
-const int WALL_HEIGTH = 10;
+const int WALL_HEIGTH = CELL_HEIGHT / 5;
 
 const int PLAYER_WIDTH = 40;
 const int PLAYER_HEIGHT = 40;
 
 const int PLAYER_STEP = 2;
+const int ENEMY_STEP = 1;
+
 
 //Couldn't make a structure with two structures inside
 
