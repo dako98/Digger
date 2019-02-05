@@ -1,53 +1,43 @@
 #include "Enemy.h"
 
-Enemy::Enemy(int x, int y, Matrix *map)
+Enemy::Enemy(coord point, Matrix *map)
 	:map(map)
-	, currentCell(x, y)
+	, currentCell(point)
 	, knowsRoute(false)
+	, movementProgress(0)
 {}
 
 void Enemy::Print(SDL_Renderer *renderer, SDL_Texture* texture) const
 {
 	SDL_Rect entityRect;
-	int direction;
-
-
-	if (currentCell.y > routeToPlayer.front().y)
-		direction = UP;
-
-	else if (currentCell.x > routeToPlayer.front().x)
-		direction = LEFT;
-
-	else if (currentCell.y < routeToPlayer.front().y)
-		direction = DOWN;
-
-	else if (currentCell.x < routeToPlayer.front().x)
-		direction = RIGHT;
+	int direction = UP;
 
 	int deltaX = 0;
 	int deltaY = 0;
 
-	switch (direction)
+	if (routeToPlayer.size() != 0)
 	{
-	case UP:
-		deltaY = routeToPlayer.front().y - currentCell.y;
-		break;
-	case LEFT:
-		deltaX = routeToPlayer.front().x - currentCell.x;
-		break;
-	case DOWN:
-		deltaY = routeToPlayer.front().y - currentCell.y;
-		break;
-	case RIGHT:
-		deltaX = routeToPlayer.front().x - currentCell.x;
+		if (currentCell.y > routeToPlayer.front().y)
+			direction = UP;
 
-		break;
-	default:
-		break;
+		else if (currentCell.x > routeToPlayer.front().x)
+			direction = LEFT;
+
+		else if (currentCell.y < routeToPlayer.front().y)
+			direction = DOWN;
+
+		else if (currentCell.x < routeToPlayer.front().x)
+			direction = RIGHT;
+
+
+
+		deltaY = routeToPlayer.front().y - currentCell.y;
+
+		deltaX = routeToPlayer.front().x - currentCell.x;
 	}
 
-	entityRect.x = (GAME_FIELD_BEGIN_X + currentCell.x * CELL_WIDTH + deltaX * CELL_WIDTH*(movementProgress / (double)MOVEMENT_STEPS));
-	entityRect.y = (GAME_FIELD_BEGIN_Y + currentCell.y * CELL_HEIGHT + deltaY * CELL_HEIGHT*(movementProgress / (double)MOVEMENT_STEPS));
+	entityRect.x = (GAME_FIELD_BEGIN_X + currentCell.x * CELL_WIDTH - deltaX * CELL_WIDTH*(movementProgress / (double)MOVEMENT_STEPS-1));
+	entityRect.y = (GAME_FIELD_BEGIN_Y + currentCell.y * CELL_HEIGHT - deltaY * CELL_HEIGHT*(movementProgress / (double)MOVEMENT_STEPS-1));
 	entityRect.w = CELL_WIDTH;
 	entityRect.h = CELL_HEIGHT;
 

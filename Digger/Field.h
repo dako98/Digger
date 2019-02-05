@@ -8,6 +8,7 @@
 #include "Constants.h"
 #include "ResourceLoader.h"
 #include "Enemy.h"
+#include "Player.h"
 
 
 //using Matrix = std::vector<std::vector<std::bitset<BITS_IN_CELL>>>;
@@ -18,8 +19,8 @@ class Field
 public:
 	Field(SDL_Renderer* renderer);
 
-	void Print(SDL_Renderer* renderer) const;
-	void Update();
+	void Print() const;
+	void Update(int direction);
 
 
 
@@ -30,6 +31,7 @@ private:
 
 	TextureManager textures;
 
+	SDL_Renderer * renderer;
 
 	Matrix grid;
 
@@ -38,7 +40,8 @@ private:
 //	std::vector<Bag> bags;		//TODO
 
 
-	coord Player;
+	Player player;
+	coord previousPlayerPos;
 
 
 };

@@ -1,14 +1,20 @@
 #include "Algorithms.h"
 
 
-void RandomDFS(Matrix &map, int debth, int beginX, int beginY)
+void RandomDFS(Matrix &map, int debth, coord begin)
 {
 	bool done = false;
-	_RandomDFS(map, debth, beginX, beginY, done);
+	_RandomDFS(map, debth, begin.x, begin.y, done);
 }
 
 void ConnectCells(Matrix &map, coord cell1, coord cell2)
 {
+	if (cell1.x < 0 || cell1.x >= CELLS_IN_ROW || cell1.y < 0 || cell1.y >= CELLS_IN_COL ||
+		cell2.x < 0 || cell2.x >= CELLS_IN_ROW || cell2.y < 0 || cell2.y >= CELLS_IN_COL)
+	{
+		return;
+	}
+
 	if (cell1.x == cell2.x)
 	{
 		map[std::min(cell1.y, cell2.y)][cell1.x][CellData::BOTTOM_WALL] = 0;
@@ -41,7 +47,7 @@ void GetUnvisitedNeighbours(Matrix &map, std::vector<coord> &neightbours, int x,
 		neightbours.push_back(coord(x, y + 1));
 }
 
-void GetNeighbours(Matrix & map, std::vector<coord>& neightbours, int x, int y)
+void GetNeighbours(const Matrix & map, std::vector<coord>& neightbours, int x, int y)
 {
 	neightbours.erase(neightbours.begin(), neightbours.end());
 
@@ -126,7 +132,7 @@ coord FarthestCell(Matrix &map, coord begin)
 	return current;
 }
 
-void ConstructPaths(Matrix & map, coord player, std::vector<Enemy>& enemies)
+void ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& enemies)
 {
 	int distance = 1;
 
@@ -143,7 +149,6 @@ void ConstructPaths(Matrix & map, coord player, std::vector<Enemy>& enemies)
 	distance++;
 
 	std::unordered_set <coord> used;
-	std::unordered_set <Enemy*> updated;
 
 
 	std::queue<coord> que;
@@ -174,7 +179,16 @@ void ConstructPaths(Matrix & map, coord player, std::vector<Enemy>& enemies)
 				{
 
 					LeeMatrix[neighbour.y][neighbour.x] = distance;
-					
+
+					for (auto row : LeeMatrix)
+					{
+						std::cout << '\n';
+						for (auto cell : row)
+							std::cout << cell << '\t';
+					}
+					std::cout << '\n';
+
+
 					std::queue<coord> path;
 					Backtrack(LeeMatrix, neighbour, player, path);
 					enemy.UpdateRoute(path);
@@ -186,8 +200,15 @@ void ConstructPaths(Matrix & map, coord player, std::vector<Enemy>& enemies)
 				LeeMatrix[neighbour.y][neighbour.x] = distance;
 				que.push(neighbour);
 			}
+			else
+			{
+				continue;
+			}
 		}
-		distance++;
+		if (neighbours.size() != 0)
+		{
+			distance++;
+		}
 	}
 }
 

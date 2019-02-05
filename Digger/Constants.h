@@ -11,9 +11,13 @@ const int WINDOW_HEIGHT = 480;
 const int CELL_WIDTH = 50;
 const int CELL_HEIGHT = 50;
 
-const int WALL_WIDTH = 50;
+const int WALL_WIDTH = CELL_WIDTH;
 const int WALL_HEIGTH = 10;
 
+const int PLAYER_WIDTH = 40;
+const int PLAYER_HEIGHT = 40;
+
+const int PLAYER_STEP = 2;
 
 //Couldn't make a structure with two structures inside
 
@@ -36,8 +40,9 @@ struct Color
 
 const Color MISSING_TEXTURE_COLOR = { 247, 0, 247, 0 };
 
-
 const int BITS_IN_CELL = 8;
+const int MOVEMENT_STEPS = 100;
+const int PLAYER_LIVES = 3;
 
 enum CellData
 {
@@ -93,7 +98,9 @@ enum Direction
 	UP,
 	LEFT,
 	DOWN,
-	RIGHT
+	RIGHT,
+
+	INVALID_DIRECTION
 };
 
 struct coord
@@ -111,6 +118,8 @@ struct coord
 	int x, y;
 };
 
+const coord PLAYER_SPAWN = { 5,5 };
+const int INITIAL_MAZE_LENGTH = 20;
 
 static bool operator==(const coord& lhs, const coord& rhs)
 {
@@ -132,7 +141,6 @@ struct std::hash<coord>
 };
 
 
-const int MOVEMENT_STEPS = 100;
 
 using Matrix = std::vector<std::vector<std::bitset<BITS_IN_CELL>>>;
 

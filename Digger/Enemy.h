@@ -12,7 +12,7 @@
 class Enemy
 {
 public:
-	Enemy(int x, int y, Matrix *map);
+	Enemy(coord point, Matrix *map);
 
 	void Print(SDL_Renderer *renderer, SDL_Texture* texture) const;
 	void Advance(int steps);

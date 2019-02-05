@@ -3,7 +3,8 @@
 
 Field::Field(SDL_Renderer* renderer)
 	:textures(renderer)
-	, Player(5, 5)
+	, player(PLAYER_SPAWN)
+	, renderer(renderer)
 {
 	grid.resize(CELLS_IN_COL);
 	for (auto &row : grid)
@@ -25,18 +26,20 @@ Field::Field(SDL_Renderer* renderer)
 		}
 	}
 
-	RandomDFS(grid, 20, 5, 5);
-	monsterSpawner = FarthestCell(grid, coord(5, 5));
+	RandomDFS(grid, INITIAL_MAZE_LENGTH,PLAYER_SPAWN);
+	monsterSpawner = FarthestCell(grid, PLAYER_SPAWN);
 
-	enemies.push_back(Enemy(8, 6, &grid));
-
+	enemies.push_back(Enemy(monsterSpawner, &grid));
+	previousPlayerPos = coord(-1, -1);
 }
 
-void Field::Print(SDL_Renderer * renderer) const
+void Field::Print() const
 {
 
 	int rowsCount = grid.size();
 	int colsCount;
+
+
 
 	SDL_Texture* texture = textures.GetTexture(Textures::MISSING_TEXTURE);
 
@@ -145,12 +148,64 @@ void Field::Print(SDL_Renderer * renderer) const
 	SDL_RenderSetViewport(renderer, &cellRect);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 
-	SDL_RenderPresent(renderer);
+//	SDL_RenderPresent(renderer);
+
+	for (const auto& enemy : enemies)
+		enemy.Print(renderer, textures.GetTexture(Textures::ENEMY_TEXTURE));
+
+	player.Print(renderer, textures.GetTexture(Textures::PLAYER_TEXTURE));
+
 }
 
-void Field::Update()
+void Field::Update(int direction)
 {
-	ConstructPaths(grid, Player, enemies);
+
+	player.AlignedMove(direction);
+
+	//	Print();
+
+	switch (direction)
+	{
+	case UP:
+		ConnectCells(grid, player.GetCoord(), previousPlayerPos);
+		break;
+
+	case LEFT:
+		ConnectCells(grid, player.GetCoord(), coord(player.GetCoord().x - 1, player.GetCoord().y));
+
+		break;
+	case DOWN:
+		ConnectCells(grid, player.GetCoord(), coord(player.GetCoord().x, player.GetCoord().y + 1));
+
+		break;
+	case RIGHT:
+		ConnectCells(grid, player.GetCoord(), coord(player.GetCoord().x + 1, player.GetCoord().y));
+
+		break;
+	case INVALID_DIRECTION:
+		break;
+	default:
+		break;
+	}
+
+	if (previousPlayerPos != player.GetCoord())
+	{
+		previousPlayerPos = player.GetCoord();
+
+		for (auto &enemy : enemies)
+			enemy.IsUpToDate() = false;
+
+		ConstructPaths(grid, player.GetCoord(), enemies);
+	}
+
+
+	for (auto &enemy : enemies)
+		enemy.Advance(1);
+
+	Print();
+
+	SDL_RenderPresent(renderer);
+
 }
 
 

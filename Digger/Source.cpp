@@ -2,6 +2,7 @@
 #include "Initialisation.h"
 #include "Constants.h"
 #include "Field.h"
+#include "Game.h"
 
 int main(int argc, char* argv[])
 {
@@ -25,9 +26,13 @@ int main(int argc, char* argv[])
 	//test
 	TestMakePlayer(renderer);
 
-	Field field(renderer);
-	field.Update();
-	field.Print(renderer);
+	Game game(renderer);
+
+	game.PlayGame();
+
+//	Field field(renderer);
+//	field.Update();
+//	field.Print();
 
 
 	return 0;
