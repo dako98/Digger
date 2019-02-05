@@ -21,6 +21,8 @@ public:
 	coord DrawingCoord() const;
 	void AlignedMove(int direction);
 
+	void Respawn();
+
 	void Move(int direction);
 	int getClosestDir();
 

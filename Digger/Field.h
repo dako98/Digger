@@ -20,9 +20,10 @@ public:
 	Field(SDL_Renderer* renderer);
 
 	void Print() const;
-	void Update(int direction);
+	bool Update(int direction);
+	void SpawnEnemy();
 
-
+	void Reset();
 
 
 	~Field();
@@ -42,7 +43,7 @@ private:
 
 	Player player;
 	coord previousPlayerPos;
-
+	int gems;
 
 };
 

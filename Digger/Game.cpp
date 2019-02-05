@@ -38,7 +38,21 @@ void Game::PlayGame()
 			else if (keystates[SDL_SCANCODE_RIGHT])
 				direction = RIGHT;
 
-			gameField.Update(direction);
+			bool state = gameField.Update(direction);
+
+			if (state == false)
+			{
+				std::cout << "game over";
+				return;
+			}
+
+			if (enemySpawnCooldown <= 0);
+			{
+				gameField.SpawnEnemy();
+				enemySpawnCooldown = ENEMY_SPAWN_COOLDOWN;
+			}
+			enemySpawnCooldown--;
+
 			direction = INVALID_DIRECTION;
 		}
 

@@ -14,6 +14,9 @@ const int WINDOW_HEIGHT = 480;
 const int CELL_WIDTH = 50;
 const int CELL_HEIGHT = 50;
 
+const int ITEM_WIDTH = 30;
+const int ITEM_HEIGHT = 30;
+
 const int WALL_WIDTH = CELL_WIDTH;
 const int WALL_HEIGTH = CELL_HEIGHT / 5;
 
@@ -21,10 +24,8 @@ const int PLAYER_WIDTH = 40;
 const int PLAYER_HEIGHT = 40;
 
 const int PLAYER_STEP = 2;
-const int ENEMY_STEP = 3;
+const int ENEMY_STEP = 0;
 
-
-//Couldn't make a structure with two structures inside
 
 const int GAME_FIELD_BEGIN_X = 0;
 const int GAME_FIELD_BEGIN_Y = 0;
@@ -61,8 +62,14 @@ struct coord
 const Color MISSING_TEXTURE_COLOR = { 247, 0, 247, 0 };
 
 const int BITS_IN_CELL = 8;
+
 const int MOVEMENT_STEPS = 100;
 const int PLAYER_LIVES = 3;
+const int GEMS_COUNT = 10;
+const int GEM_SCORE = 100;
+
+const int MAX_ENEMIES_COUNT = 1;
+const int ENEMY_SPAWN_COOLDOWN = 50;
 
 const coord PLAYER_SPAWN = { 5,5 };
 const int INITIAL_MAZE_LENGTH = 20;

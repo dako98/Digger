@@ -54,9 +54,8 @@ Player::Player(coord start)
 
 }
 
-	bool Player::Die()
+bool Player::Die()
 {
-
 	return --lives > 0;
 }
 
@@ -177,6 +176,15 @@ void Player::AlignedMove(int direction)
 		}
 	}
 	facing = direction;
+}
+
+void Player::Respawn()
+{
+	currentCell = PLAYER_SPAWN;
+	facing = INVALID_DIRECTION;
+
+	drawingCoordinates.x = currentCell.x*CELL_WIDTH;
+	drawingCoordinates.y = currentCell.y*CELL_HEIGHT;
 }
 
 

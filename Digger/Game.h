@@ -9,13 +9,13 @@ public:
 	Game(SDL_Renderer* renderer);
 
 	void PlayGame();
-
 	~Game();
 
 private:
 
 	Field gameField;
 
+	int enemySpawnCooldown;
 };
 
 

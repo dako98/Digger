@@ -1,10 +1,14 @@
 #include "Field.h"
 #include "Algorithms.h"
 
+
+void PopulateGems(Matrix &map);
+
 Field::Field(SDL_Renderer* renderer)
 	:textures(renderer)
 	, player(PLAYER_SPAWN)
 	, renderer(renderer)
+	, gems(GEMS_COUNT)
 {
 #ifndef DEBUG
 
@@ -33,14 +37,30 @@ Field::Field(SDL_Renderer* renderer)
 		}
 	}
 
-	RandomDFS(grid, INITIAL_MAZE_LENGTH,PLAYER_SPAWN);
+	RandomDFS(grid, INITIAL_MAZE_LENGTH, PLAYER_SPAWN);
 
-//	PopulateGems();
+	PopulateGems(grid);
 
 	monsterSpawner = FarthestCell(grid, PLAYER_SPAWN);
 
-	enemies.push_back(Enemy(monsterSpawner, &grid));
 	previousPlayerPos = coord(-1, -1);
+}
+
+void PopulateGems(Matrix &map)
+{
+	int x, y, usedGems = 0;
+
+	while (usedGems<GEMS_COUNT)
+	{
+		x = rand() % CELLS_IN_ROW;
+		y = rand() % CELLS_IN_COL;
+
+		if (map[y][x] == 0b11110000)
+		{
+			map[y][x][GEM] = 1;
+			usedGems++;
+		}
+	}
 }
 
 void Field::Print() const
@@ -58,7 +78,7 @@ void Field::Print() const
 		colsCount = grid[row].size();
 		for (int col = 0; col < colsCount; ++col)
 		{
-			if (grid[row][col] == 0b11110000)	//full cell
+			if (grid[row][col].to_ulong() >=  0b11110000)	//full cell
 			{
 				SDL_Rect cellRect;
 				texture = textures.GetTexture(Textures::NORMAL_DIRT_TEXTURE);
@@ -71,6 +91,21 @@ void Field::Print() const
 
 				SDL_RenderSetViewport(renderer, &cellRect);
 				SDL_RenderCopy(renderer, texture, NULL, NULL);
+
+				if (grid[row][col][GEM] == 1)
+				{
+					SDL_Rect cellRect;
+					texture = textures.GetTexture(Textures::GEM_TEXTURE);
+
+					cellRect.x = (GAME_FIELD_BEGIN_X + col * CELL_WIDTH + CELL_WIDTH / 2 - ITEM_WIDTH / 2);
+					cellRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT + CELL_HEIGHT / 2 - ITEM_HEIGHT / 2);
+					cellRect.w = ITEM_WIDTH;
+					cellRect.h = ITEM_HEIGHT;
+
+
+					SDL_RenderSetViewport(renderer, &cellRect);
+					SDL_RenderCopy(renderer, texture, NULL, NULL);
+				}
 
 				continue;
 			}
@@ -154,20 +189,25 @@ void Field::Print() const
 	SDL_RenderSetViewport(renderer, &cellRect);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 
-//	SDL_RenderPresent(renderer);
-
 	for (const auto& enemy : enemies)
 		enemy.Print(renderer, textures.GetTexture(Textures::ENEMY_TEXTURE));
+
+
 
 	player.Print(renderer, textures.GetTexture(Textures::PLAYER_TEXTURE));
 
 }
 
-void Field::Update(int direction)
+bool Field::Update(int direction)
 {
+	if (gems == 0)
+	{
+		return false;
+	}
 
 	player.AlignedMove(direction);
 
+	coord currentPosition = player.GetCoord();
 
 	if (previousPlayerPos != player.GetCoord())
 	{
@@ -197,15 +237,30 @@ void Field::Update(int direction)
 		}
 
 
-		coord currentPosition = player.GetCoord();
 
 		if (grid[currentPosition.y][currentPosition.x][GEM] == 1)
 		{
-			player.AddScore(100);
+			player.AddScore(GEM_SCORE);
 			grid[currentPosition.y][currentPosition.x][GEM] == 0;
+			gems--;
 		}
 
+	}
 
+	for (const auto &enemy : enemies)
+	{
+		if (enemy.GetCoord() == currentPosition)
+		{
+			if (player.Die() == false)
+			{
+//				break;
+				return false;
+			}
+			else
+			{
+				Reset();
+			}
+		}
 	}
 
 	if (previousPlayerPos != player.GetCoord())
@@ -234,6 +289,24 @@ void Field::Update(int direction)
 
 	SDL_RenderPresent(renderer);
 
+
+	return true;
+}
+
+void Field::Reset()
+{
+	enemies.erase(enemies.begin(), enemies.end());
+	player.Respawn();
+}
+
+void Field::SpawnEnemy()
+{
+	if (enemies.size() <= MAX_ENEMIES_COUNT)
+	{
+		enemies.push_back(Enemy(monsterSpawner, &grid));
+		enemies.back().IsUpToDate() = false;
+		ConstructPaths(grid, player.GetCoord(), enemies);
+	}
 }
 
 
