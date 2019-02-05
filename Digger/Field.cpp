@@ -34,6 +34,9 @@ Field::Field(SDL_Renderer* renderer)
 	}
 
 	RandomDFS(grid, INITIAL_MAZE_LENGTH,PLAYER_SPAWN);
+
+//	PopulateGems();
+
 	monsterSpawner = FarthestCell(grid, PLAYER_SPAWN);
 
 	enemies.push_back(Enemy(monsterSpawner, &grid));
@@ -55,7 +58,7 @@ void Field::Print() const
 		colsCount = grid[row].size();
 		for (int col = 0; col < colsCount; ++col)
 		{
-			if (grid[row][col]==0b11110000)	//full cell
+			if (grid[row][col] == 0b11110000)	//full cell
 			{
 				SDL_Rect cellRect;
 				texture = textures.GetTexture(Textures::NORMAL_DIRT_TEXTURE);
@@ -64,6 +67,7 @@ void Field::Print() const
 				cellRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
 				cellRect.w = CELL_WIDTH;
 				cellRect.h = CELL_HEIGHT;
+
 
 				SDL_RenderSetViewport(renderer, &cellRect);
 				SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -80,6 +84,7 @@ void Field::Print() const
 				cellRect.w = CELL_WIDTH;
 				cellRect.h = CELL_HEIGHT;
 
+
 				SDL_RenderSetViewport(renderer, &cellRect);
 				SDL_RenderCopy(renderer, texture, NULL, NULL);
 			}
@@ -95,26 +100,18 @@ void Field::Print() const
 				wallRect.h = WALL_HEIGTH;
 
 				SDL_RenderSetViewport(renderer, &wallRect);
-				//SDL_RenderCopy(renderer, texture, NULL, NULL);
 				SDL_RenderCopyEx(renderer, texture, NULL, NULL, 0, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
-
 			}
 
 			if (grid[row][col][LEFT_WALL])
-			{ /*
-				wallRect.x = (GAME_FIELD_BEGIN_X + col * CELL_WIDTH);
+			{
+				wallRect.x = (GAME_FIELD_BEGIN_X + col * CELL_WIDTH - CELL_WIDTH / 2 + WALL_HEIGTH / 2 + WALL_HEIGTH*2);
 				wallRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
-				wallRect.w = VERTICAL_WALL_WIDTH;
-				wallRect.h = VERTICAL_WALL_HEIGTH;
-				*/
-				wallRect.x = (GAME_FIELD_BEGIN_X + col * CELL_WIDTH);
-				wallRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
-				wallRect.h = WALL_HEIGTH;
-				wallRect.w = WALL_WIDTH;
+				wallRect.w = WALL_HEIGTH;
+				wallRect.h = WALL_WIDTH;
 
 				SDL_RenderSetViewport(renderer, &wallRect);
-				//SDL_RenderCopy(renderer, texture, NULL, NULL);
-				SDL_RenderCopyEx(renderer, texture, &wallRect, NULL, 0, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
+				SDL_RenderCopyEx(renderer, texture, NULL, NULL, 0, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
 			}
 
 			if (grid[row][col][BOTTOM_WALL])
@@ -130,17 +127,18 @@ void Field::Print() const
 
 			if (grid[row][col][RIGHT_WALL])
 			{
-//				wallRect.x = (GAME_FIELD_BEGIN_X + (col+1) * CELL_WIDTH - VERTICAL_WALL_WIDTH);
-//				wallRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
-//				wallRect.h = VERTICAL_WALL_WIDTH;
-//				wallRect.w = VERTICAL_WALL_HEIGTH;
-//
-//				SDL_RenderSetViewport(renderer, &wallRect);
-//				SDL_RenderCopyEx(renderer, texture, NULL, NULL, 90, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
+
+				wallRect.x = (GAME_FIELD_BEGIN_X + (col + 1)* CELL_WIDTH - CELL_WIDTH / 2 + WALL_WIDTH / 2 - WALL_HEIGTH);
+				wallRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
+				wallRect.w = WALL_HEIGTH;
+				wallRect.h = WALL_WIDTH;
+
+				SDL_RenderSetViewport(renderer, &wallRect);
+				SDL_RenderCopyEx(renderer, texture, NULL, NULL, 0, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
+//				SDL_RenderCopyEx(renderer, texture, &tmp, &wallRect, 90, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
+
 			}
-
-
-
+			
 		}
 	}
 
@@ -151,6 +149,7 @@ void Field::Print() const
 	cellRect.y = (GAME_FIELD_BEGIN_Y + monsterSpawner.y * CELL_HEIGHT + WALL_HEIGTH);
 	cellRect.w = CELL_WIDTH - 2* WALL_HEIGTH;
 	cellRect.h = CELL_HEIGHT - 2* WALL_HEIGTH;
+
 
 	SDL_RenderSetViewport(renderer, &cellRect);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -169,7 +168,6 @@ void Field::Update(int direction)
 
 	player.AlignedMove(direction);
 
-	//	Print();
 
 	if (previousPlayerPos != player.GetCoord())
 	{
@@ -197,16 +195,29 @@ void Field::Update(int direction)
 		default:
 			break;
 		}
+
+
+		coord currentPosition = player.GetCoord();
+
+		if (grid[currentPosition.y][currentPosition.x][GEM] == 1)
+		{
+			player.AddScore(100);
+			grid[currentPosition.y][currentPosition.x][GEM] == 0;
+		}
+
+
 	}
 
 	if (previousPlayerPos != player.GetCoord())
 	{
+
 #ifdef DEBUG
 
 	std::cout << "Player current cell: x=" << player.GetCoord().x << " y=" << player.GetCoord().y << '\n';
 	std::cout << "Player previous cell: x=" << previousPlayerPos.x << " y=" << previousPlayerPos.y << '\n';
 
 #endif // !DEBUG
+
 	previousPlayerPos = player.GetCoord();
 
 		for (auto &enemy : enemies)

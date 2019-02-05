@@ -3,6 +3,7 @@
 
 #define DEBUG
 
+
 #include <array>
 #include <bitset>
 #include <vector>
@@ -102,7 +103,7 @@ enum Textures
 
 const std::array<const char* const, Textures::COUNT> TEXTURE_PATHS = {
 	"missing-texture.png",
-	"wall.png",
+	"wall-square.png",
 	"dirt.png",
 	"hard-dirt.png",
 	"no-dirt.png",

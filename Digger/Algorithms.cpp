@@ -227,7 +227,7 @@ void ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& 
 				if (!enemy.IsUpToDate() && neighbours[i] == enemy.GetCoord())
 				{
 #ifdef DEBUG
-
+					std::cout << "Route matrix:";
 					for (auto row : LeeMatrix)
 					{
 						std::cout << '\n';

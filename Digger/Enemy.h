@@ -29,6 +29,7 @@ private:
 	bool knowsRoute;
 
 	coord currentCell;
+//	coord drawingCoord;
 
 	int movementProgress;
 

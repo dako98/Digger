@@ -1,11 +1,17 @@
-#include "Enemy.h"
+#include <iostream>
 
+#include "Enemy.h"
 Enemy::Enemy(coord point, Matrix *map)
 	:map(map)
 	, currentCell(point)
 	, knowsRoute(false)
 	, movementProgress(0)
-{}
+{
+#ifdef DEBUG
+	std::cout << "Enemy constructor at (" << point.x << "," << point.y << ")\n";
+#endif // DEBUG
+
+}
 
 void Enemy::Print(SDL_Renderer *renderer, SDL_Texture* texture) const
 {
@@ -36,8 +42,14 @@ void Enemy::Print(SDL_Renderer *renderer, SDL_Texture* texture) const
 		deltaX = routeToPlayer.front().x - currentCell.x;
 	}
 
+
+
+			
 	entityRect.x = (GAME_FIELD_BEGIN_X + currentCell.x * CELL_WIDTH - deltaX * CELL_WIDTH*((double)movementProgress / (double)MOVEMENT_STEPS - 1.0));
 	entityRect.y = (GAME_FIELD_BEGIN_Y + currentCell.y * CELL_HEIGHT - deltaY * CELL_HEIGHT*((double)movementProgress / (double)MOVEMENT_STEPS - 1.0));
+
+
+
 	entityRect.w = CELL_WIDTH;
 	entityRect.h = CELL_HEIGHT;
 
@@ -49,12 +61,14 @@ void Enemy::Advance(int steps)
 {
 	while (steps > 0 && !routeToPlayer.empty())
 	{
+
 		if (movementProgress == 0)
 		{
 			currentCell = routeToPlayer.front();
 			routeToPlayer.pop();
 			movementProgress = MOVEMENT_STEPS;
 		}
+
 		int step = std::min(movementProgress, steps);
 
 		movementProgress -= step;
