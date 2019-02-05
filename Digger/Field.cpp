@@ -6,6 +6,13 @@ Field::Field(SDL_Renderer* renderer)
 	, player(PLAYER_SPAWN)
 	, renderer(renderer)
 {
+#ifndef DEBUG
+
+	srand(time(0));
+
+#endif // !DEBUG
+
+
 	grid.resize(CELLS_IN_COL);
 	for (auto &row : grid)
 		row.resize(CELLS_IN_ROW);
@@ -102,12 +109,12 @@ void Field::Print() const
 				*/
 				wallRect.x = (GAME_FIELD_BEGIN_X + col * CELL_WIDTH);
 				wallRect.y = (GAME_FIELD_BEGIN_Y + row * CELL_HEIGHT);
-				wallRect.w = WALL_HEIGTH;
-				wallRect.h = WALL_WIDTH;
+				wallRect.h = WALL_HEIGTH;
+				wallRect.w = WALL_WIDTH;
 
 				SDL_RenderSetViewport(renderer, &wallRect);
 				//SDL_RenderCopy(renderer, texture, NULL, NULL);
-				SDL_RenderCopyEx(renderer, texture, NULL, NULL, 90, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
+				SDL_RenderCopyEx(renderer, texture, &wallRect, NULL, 0, NULL, SDL_RendererFlip(SDL_FLIP_NONE));
 			}
 
 			if (grid[row][col][BOTTOM_WALL])
@@ -170,10 +177,7 @@ void Field::Update(int direction)
 		switch (direction)
 		{
 		case UP:
-//			if (player.GetCoord().y >= 0)
-			{
-				ConnectCells(grid, player.GetCoord(), previousPlayerPos);
-			}
+			ConnectCells(grid, player.GetCoord(), previousPlayerPos);
 			break;
 
 		case LEFT:
@@ -197,10 +201,12 @@ void Field::Update(int direction)
 
 	if (previousPlayerPos != player.GetCoord())
 	{
+#ifdef DEBUG
 
 	std::cout << "Player current cell: x=" << player.GetCoord().x << " y=" << player.GetCoord().y << '\n';
 	std::cout << "Player previous cell: x=" << previousPlayerPos.x << " y=" << previousPlayerPos.y << '\n';
-		
+
+#endif // !DEBUG
 	previousPlayerPos = player.GetCoord();
 
 		for (auto &enemy : enemies)

@@ -34,13 +34,13 @@ void GetUnvisitedNeighbours(Matrix &map, std::vector<coord> &neightbours, int x,
 {
 	neightbours.erase(neightbours.begin(), neightbours.end());
 	//get all unvisited neighbours
-	if (x - 1 > 0 && map[y][x - 1] == 0b11110000)
+	if (x > 0 && map[y][x - 1] == 0b11110000)
 		neightbours.push_back(coord(x - 1, y));
 
 	if (x + 1 < map[y].size() && map[y][x + 1] == 0b11110000)
 		neightbours.push_back(coord(x + 1, y));
 
-	if (y - 1 > 0 && map[y - 1][x] == 0b11110000)
+	if (y > 0 && map[y - 1][x] == 0b11110000)
 		neightbours.push_back(coord(x, y - 1));
 
 	if (y + 1 < map.size() && map[y + 1][x] == 0b11110000)
@@ -50,7 +50,6 @@ void GetUnvisitedNeighbours(Matrix &map, std::vector<coord> &neightbours, int x,
 void GetNeighbours(const Matrix & map, std::vector<coord>& neightbours, int x, int y)
 {
 	neightbours.erase(neightbours.begin(), neightbours.end());
-
 
 	//get all neighbours
 	if (map[y][x][LEFT_WALL] == 0)
@@ -94,10 +93,8 @@ void _RandomDFS(Matrix &map, int debth, int x, int y, bool &done)
 	}
 }
 
-
 coord FarthestCell(Matrix &map, coord begin)
 {
-
 	std::unordered_set <coord> used;
 
 	std::queue<coord> que;
@@ -132,184 +129,6 @@ coord FarthestCell(Matrix &map, coord begin)
 	return current;
 }
 
-void ___TEMP_DISABLE___ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& enemies)
-{
-	int distance = 1;
-
-	std::vector<std::vector<int>> LeeMatrix;
-
-	LeeMatrix.resize(map.size());
-	int rowSize = map[0].size();
-
-	for (auto & row : LeeMatrix)
-		row.resize(rowSize);
-
-	LeeMatrix[player.y][player.x] = distance;
-
-	distance++;
-
-	std::unordered_set <coord> used;
-
-
-	std::queue<coord> que;
-	std::queue<coord> currentLevel;
-
-	que.push(player);
-
-	coord current(player);
-	std::vector<coord> neighbours;
-
-	while (que.size())
-	{
-		current = que.front();
-		que.pop();
-
-		//if used
-		if (used.find(current) != used.end()/*LeeMatrix[current.y][current.x] > 1*/) continue;
-
-		used.insert(current);
-//		LeeMatrix[current.y][current.x] = distance;
-
-		GetNeighbours(map, neighbours, current.x, current.y);
-
-		int neighboursCount = neighbours.size();
-
-		for (size_t i = 0; i < neighboursCount; i++)
-		{
-			currentLevel.push(neighbours[i]);
-		}
-
-		//adding available neighbours
-		for (size_t i = 0; i < neighboursCount; i++)
-		{
-			// if not used
-			if (used.find(neighbours[i]) == used.end())
-			{
-				coord previous = GetPrevious(LeeMatrix, map, coord(neighbours[i].y, neighbours[i].x));
-
-				LeeMatrix[neighbours[i].y][neighbours[i].x] = LeeMatrix[previous.y][previous.x] + 1;
-				que.push(neighbours[i]);
-			}
-			else
-			{
-				continue;
-
-				neighbours.erase(neighbours.begin()+i);
-				i--;
-				neighboursCount--;
-			}
-//			used.insert(neighbour);
-
-			for (auto &enemy : enemies)
-			{
-				if (!enemy.IsUpToDate() && neighbours[i] == enemy.GetCoord())
-				{
-
-//					LeeMatrix[neighbour.y][neighbour.x] = distance;
-
-					for (auto row : LeeMatrix)
-					{
-						std::cout << '\n';
-						for (auto cell : row)
-							std::cout << cell << '\t';
-					}
-					std::cout << '\n';
-
-
-					std::queue<coord> path;
-					Backtrack(LeeMatrix, map, neighbours[i], player, path);
-					enemy.UpdateRoute(path);
-				}
-			}	// for(auto &enemy : enemies)
-
-			//if not used
-//			if (used.find(neighbour) == used.end()/*LeeMatrix[neighbour.y][neighbour.x] == 0*/)
-//			{
-//				LeeMatrix[neighbour.y][neighbour.x] = distance;
-//				que.push(neighbour);
-//			}
-			
-		}	// !for(auto &neighbour : neighbours)
-
-/*		while (!currentLevel.empty())
-		{
-			// if not used
-			if (used.find(currentLevel.front())==used.end())
-			{
-//				LeeMatrix[currentLevel.front().y][currentLevel.front().x] = LeeMatrix[neighbours[i].y][neighbours[i].x] + 1;
-
-				coord previous = GetPrevious(LeeMatrix, coord(neighbours[i].y, neighbours[i].x));
-
-				LeeMatrix[neighbours[i].y][neighbours[i].x] = LeeMatrix[previous.y][previous.x] + 1;
-			}
-			currentLevel.pop();
-		}*/
-
-		if (neighbours.size() != 0)
-		{
-//			distance++;
-		}
-	}
-}
-/*
-void Lee(Matrix &map, coord begin, coord target, std::queue<coord> &path)
-{
-	int distance = 0;
-
-	std::vector<std::vector<int>> LeeMatrix;
-
-	LeeMatrix.resize(map.size());
-	int rowSize = map[0].size();
-
-	for (auto & row : LeeMatrix)
-		row.resize(rowSize);
-
-	LeeMatrix[begin.y][begin.x] = distance;
-
-	distance++;
-
-	std::unordered_set <coord> used;
-
-
-	std::queue<coord> que;
-
-	que.push(begin);
-
-	coord current(begin);
-	std::vector<coord> neighbours;
-
-	while (que.size())
-	{
-		current = que.front();
-		que.pop();
-
-		if (used.find(current) != used.end()) continue;
-
-		used.insert(current);
-
-		GetNeighbours(map, neighbours, current.x, current.y);
-
-		//adding available neighbours
-
-		for (auto &neighbour : neighbours)
-		{
-			LeeMatrix[neighbour.y][neighbour.x] = distance;
-			
-
-			if (neighbour == target)
-			{
-				Backtrack(LeeMatrix, target, begin, path);
-			}
-
-			if (used.find(neighbour) == used.end())
-			{
-				que.push(neighbour);
-			}
-		}
-		distance++;
-	}
-}*/
-
 void Backtrack(std::vector<std::vector<int>> &LeeMatrix, const Matrix & map, coord begin, coord target, std::queue<coord> &path)
 {
 	coord current = begin;
@@ -321,29 +140,6 @@ void Backtrack(std::vector<std::vector<int>> &LeeMatrix, const Matrix & map, coo
 	}
 	path.push(current);
 }
-
-coord ___TEMP_DISABLE___GetPrevious(std::vector<std::vector<int>> &LeeMatrix, coord begin)
-{
-	if (begin.y < (LeeMatrix.size() - 1) && 
-		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y + 1][begin.x])
-		return coord(begin.x, begin.y + 1);
-
-	else if (begin.y > 0 && 
-		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y - 1][begin.x])
-		return coord(begin.x, begin.y - 1);
-
-	else if (begin.x < (LeeMatrix[begin.y].size() - 1) && 
-		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y][begin.x + 1])
-		return coord(begin.x + 1, begin.y);
-
-	if (begin.x >0 && 
-		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y][begin.x - 1])
-		return coord(begin.x - 1, begin.y);
-
-	return begin;
-}
-
-
 
 coord GetPrevious(std::vector<std::vector<int>> &LeeMatrix, const Matrix &map, coord begin)
 {
@@ -374,11 +170,8 @@ coord GetPrevious(std::vector<std::vector<int>> &LeeMatrix, const Matrix &map, c
 	return begin;
 }
 
-
 void ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& enemies)
 {
-//	int distance = 1;
-
 	std::vector<std::vector<int>> LeeMatrix;
 
 	LeeMatrix.resize(map.size());
@@ -387,16 +180,12 @@ void ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& 
 	for (auto & row : LeeMatrix)
 		row.resize(rowSize);
 
-//	LeeMatrix[player.y][player.x] = distance;
 	LeeMatrix[player.y][player.x] = 1;
-
-//	distance++;
 
 	std::unordered_set <coord> used;
 
 
 	std::queue<coord> que;
-//	std::queue<coord> currentLevel;
 
 	que.push(player);
 
@@ -412,7 +201,6 @@ void ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& 
 		if (used.find(current) != used.end()) continue;
 		used.insert(current);
 
-		//		LeeMatrix[current.y][current.x] = distance;
 
 		GetNeighbours(map, neighbours, current.x, current.y);
 
@@ -438,8 +226,7 @@ void ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& 
 			{
 				if (!enemy.IsUpToDate() && neighbours[i] == enemy.GetCoord())
 				{
-
-					//					LeeMatrix[neighbour.y][neighbour.x] = distance;
+#ifdef DEBUG
 
 					for (auto row : LeeMatrix)
 					{
@@ -448,6 +235,7 @@ void ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& 
 							std::cout << cell << '\t';
 					}
 					std::cout << '\n';
+#endif // DEBUG
 
 
 					std::queue<coord> path;
@@ -455,72 +243,6 @@ void ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& 
 					enemy.UpdateRoute(path);
 				}
 			}	// for(auto &enemy : enemies)
-
-
-
 		}	// !for(auto &neighbour : neighbours)
 	}
 }
-
-
-
-/*
-void DesperateLee(int mat[][N], int i, int j, int x, int y)
-{
-	// construct a matrix to keep track of visited cells
-	bool visited[M][N];
-
-	// initially all cells are unvisited
-	memset(visited, false, sizeof visited);
-
-	// create an empty queue
-	queue<Node> q;
-
-	// mark source cell as visited and enqueue the source node
-	visited[i][j] = true;
-	q.push({i, j, 0});
-
-	// stores length of longest path from source to destination
-	int min_dist = INT_MAX;
-
-	// run till queue is not empty	
-	while (!q.empty())
-	{
-		// pop front node from queue and process it
-		Node node = q.front();
-		q.pop();
-
-		// (i, j) represents current cell and dist stores its
-		// minimum distance from the source
-		int i = node.x, j = node.y, dist = node.dist;
-
-		// if destination is found, update min_dist and stop
-		if (i == x && j == y)
-		{
-			min_dist = dist;
-			break;
-		}
-
-		// check for all 4 possible movements from current cell
-		// and enqueue each valid movement
-		for (int k = 0; k < 4; k++)
-		{
-			// check if it is possible to go to position
-			// (i + row[k], j + col[k]) from current position
-			if (isValid(mat, visited, i + row[k], j + col[k]))
-			{
-				// mark next cell as visited and enqueue it
-				visited[i + row[k]][j + col[k]] = true;
-				q.push({ i + row[k], j + col[k], dist + 1 });
-			}
-		}
-	}
-
-	if (min_dist != INT_MAX)
-		cout << "The shortest path from source to destination "
-				"has length " << min_dist;
-	else
-		cout << "Destination can't be reached from given source";
-}
-}
-*/

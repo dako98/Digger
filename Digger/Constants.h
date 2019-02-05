@@ -1,6 +1,8 @@
 #ifndef _CONSTANTS_
 #define _CONSTANTS_
 
+#define DEBUG
+
 #include <array>
 #include <bitset>
 #include <vector>
@@ -40,11 +42,29 @@ struct Color
 	short opacity;
 };
 
+struct coord
+{
+	coord()
+		:x(0)
+		, y(0)
+	{}
+
+	coord(int x, int y)
+		:x(x)
+		, y(y)
+	{}
+
+	int x, y;
+};
+
 const Color MISSING_TEXTURE_COLOR = { 247, 0, 247, 0 };
 
 const int BITS_IN_CELL = 8;
 const int MOVEMENT_STEPS = 100;
 const int PLAYER_LIVES = 3;
+
+const coord PLAYER_SPAWN = { 5,5 };
+const int INITIAL_MAZE_LENGTH = 20;
 
 enum CellData
 {
@@ -105,23 +125,10 @@ enum Direction
 	INVALID_DIRECTION
 };
 
-struct coord
-{
-	coord()
-		:x(0)
-		, y(0)
-	{}
 
-	coord(int x, int y)
-		:x(x)
-		, y(y)
-	{}
 
-	int x, y;
-};
-
-const coord PLAYER_SPAWN = { 5,5 };
-const int INITIAL_MAZE_LENGTH = 20;
+//const coord PLAYER_SPAWN = { 5,5 };
+//const int INITIAL_MAZE_LENGTH = 20;
 
 static bool operator==(const coord& lhs, const coord& rhs)
 {

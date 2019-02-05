@@ -2,7 +2,8 @@
 #define _ALGORITHMS_
 
 
-#include <random>
+//#include <random>
+#include <ctime>
 #include <queue>
 #include <vector>
 #include <unordered_map>
@@ -12,8 +13,6 @@
 #include "Constants.h"
 #include "Enemy.h"
 
-//srand(0);
-void _RandomDFS(Matrix &map, int debth, int x, int y, bool &done);
 
 void RandomDFS(Matrix &map, int debth, coord begin);
 
@@ -23,13 +22,15 @@ void GetUnvisitedNeighbours(Matrix &map, std::vector<coord> &neightbours, int x,
 
 void GetNeighbours(const Matrix &map, std::vector<coord> &neighbours, int x, int y);
 
-coord FarthestCell(Matrix &map, coord begin);
+void _RandomDFS(Matrix &map, int debth, int x, int y, bool &done);
 
-void ConstructPaths(const Matrix &map,const coord &player, std::vector<Enemy> &enemies);
+coord FarthestCell(Matrix &map, coord begin);
 
 void Backtrack(std::vector<std::vector<int>> &LeeMatrix, const Matrix &map, coord begin, coord target, std::queue<coord> &path);
 
 coord GetPrevious(std::vector<std::vector<int>> &LeeMatrix, const Matrix &map, coord begin);
+
+void ConstructPaths(const Matrix &map,const coord &player, std::vector<Enemy> &enemies);
 
 
 

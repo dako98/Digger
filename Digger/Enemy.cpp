@@ -21,13 +21,13 @@ void Enemy::Print(SDL_Renderer *renderer, SDL_Texture* texture) const
 			direction = UP;
 
 		else if (currentCell.x > routeToPlayer.front().x)
-			direction = LEFT;
+			direction = RIGHT;
 
 		else if (currentCell.y < routeToPlayer.front().y)
 			direction = DOWN;
 
 		else if (currentCell.x < routeToPlayer.front().x)
-			direction = RIGHT;
+			direction = LEFT;
 
 
 
@@ -36,8 +36,8 @@ void Enemy::Print(SDL_Renderer *renderer, SDL_Texture* texture) const
 		deltaX = routeToPlayer.front().x - currentCell.x;
 	}
 
-	entityRect.x = (GAME_FIELD_BEGIN_X + currentCell.x * CELL_WIDTH - deltaX * CELL_WIDTH*(movementProgress / (double)MOVEMENT_STEPS-1.0));
-	entityRect.y = (GAME_FIELD_BEGIN_Y + currentCell.y * CELL_HEIGHT - deltaY * CELL_HEIGHT*(movementProgress / (double)MOVEMENT_STEPS-1.0));
+	entityRect.x = (GAME_FIELD_BEGIN_X + currentCell.x * CELL_WIDTH - deltaX * CELL_WIDTH*((double)movementProgress / (double)MOVEMENT_STEPS - 1.0));
+	entityRect.y = (GAME_FIELD_BEGIN_Y + currentCell.y * CELL_HEIGHT - deltaY * CELL_HEIGHT*((double)movementProgress / (double)MOVEMENT_STEPS - 1.0));
 	entityRect.w = CELL_WIDTH;
 	entityRect.h = CELL_HEIGHT;
 
