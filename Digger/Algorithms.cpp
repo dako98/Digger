@@ -185,7 +185,7 @@ void ___TEMP_DISABLE___ConstructPaths(const Matrix &map, const coord &player, st
 			// if not used
 			if (used.find(neighbours[i]) == used.end())
 			{
-				coord previous = GetPrevious(LeeMatrix, coord(neighbours[i].y, neighbours[i].x));
+				coord previous = GetPrevious(LeeMatrix, map, coord(neighbours[i].y, neighbours[i].x));
 
 				LeeMatrix[neighbours[i].y][neighbours[i].x] = LeeMatrix[previous.y][previous.x] + 1;
 				que.push(neighbours[i]);
@@ -217,7 +217,7 @@ void ___TEMP_DISABLE___ConstructPaths(const Matrix &map, const coord &player, st
 
 
 					std::queue<coord> path;
-					Backtrack(LeeMatrix, neighbours[i], player, path);
+					Backtrack(LeeMatrix, map, neighbours[i], player, path);
 					enemy.UpdateRoute(path);
 				}
 			}	// for(auto &enemy : enemies)
@@ -310,19 +310,19 @@ void Lee(Matrix &map, coord begin, coord target, std::queue<coord> &path)
 	}
 }*/
 
-void Backtrack(std::vector<std::vector<int>> &LeeMatrix, coord begin, coord target, std::queue<coord> &path)
+void Backtrack(std::vector<std::vector<int>> &LeeMatrix, const Matrix & map, coord begin, coord target, std::queue<coord> &path)
 {
 	coord current = begin;
 
 	while (current != target)
 	{
 		path.push(current);
-		current = GetPrevious(LeeMatrix, current);
+		current = GetPrevious(LeeMatrix, map, current);
 	}
 	path.push(current);
 }
 
-coord GetPrevious(std::vector<std::vector<int>> &LeeMatrix, coord begin)
+coord ___TEMP_DISABLE___GetPrevious(std::vector<std::vector<int>> &LeeMatrix, coord begin)
 {
 	if (begin.y < (LeeMatrix.size() - 1) && 
 		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y + 1][begin.x])
@@ -343,6 +343,36 @@ coord GetPrevious(std::vector<std::vector<int>> &LeeMatrix, coord begin)
 	return begin;
 }
 
+
+
+coord GetPrevious(std::vector<std::vector<int>> &LeeMatrix, const Matrix &map, coord begin)
+{
+	//going DOWN
+	if (begin.y < (LeeMatrix.size() - 1) &&
+		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y + 1][begin.x] &&
+		map[begin.y][begin.x][BOTTOM_WALL] == 0 && map[begin.y + 1][begin.x][TOP_WALL] == 0)
+		return coord(begin.x, begin.y + 1);
+
+	//going UP
+	else if (begin.y > 0 &&
+		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y - 1][begin.x] &&
+		map[begin.y][begin.x][TOP_WALL] == 0 && map[begin.y - 1][begin.x][BOTTOM_WALL] == 0)
+		return coord(begin.x, begin.y - 1);
+
+	//going RIGHT
+	else if (begin.x < (LeeMatrix[begin.y].size() - 1) &&
+		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y][begin.x + 1] &&
+		map[begin.y][begin.x][RIGHT_WALL] == 0 && map[begin.y][begin.x + 1][LEFT_WALL] == 0)
+		return coord(begin.x + 1, begin.y);
+
+	//going LEFT
+	if (begin.x > 0 &&
+		(LeeMatrix[begin.y][begin.x] - 1) == LeeMatrix[begin.y][begin.x - 1] &&
+		map[begin.y][begin.x][LEFT_WALL] == 0 && map[begin.y][begin.x - 1][RIGHT_WALL] == 0)
+		return coord(begin.x - 1, begin.y);
+
+	return begin;
+}
 
 
 void ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& enemies)
@@ -421,7 +451,7 @@ void ConstructPaths(const Matrix &map, const coord &player, std::vector<Enemy>& 
 
 
 					std::queue<coord> path;
-					Backtrack(LeeMatrix, neighbours[i], player, path);
+					Backtrack(LeeMatrix, map, neighbours[i], player, path);
 					enemy.UpdateRoute(path);
 				}
 			}	// for(auto &enemy : enemies)

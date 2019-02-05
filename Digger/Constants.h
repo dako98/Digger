@@ -18,7 +18,7 @@ const int PLAYER_WIDTH = 40;
 const int PLAYER_HEIGHT = 40;
 
 const int PLAYER_STEP = 2;
-const int ENEMY_STEP = 1;
+const int ENEMY_STEP = 3;
 
 
 //Couldn't make a structure with two structures inside

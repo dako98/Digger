@@ -170,7 +170,7 @@ void Field::Update(int direction)
 		switch (direction)
 		{
 		case UP:
-			if (player.GetCoord().y >= 0)
+//			if (player.GetCoord().y >= 0)
 			{
 				ConnectCells(grid, player.GetCoord(), previousPlayerPos);
 			}

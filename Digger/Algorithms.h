@@ -27,9 +27,9 @@ coord FarthestCell(Matrix &map, coord begin);
 
 void ConstructPaths(const Matrix &map,const coord &player, std::vector<Enemy> &enemies);
 
-void Backtrack(std::vector<std::vector<int>> &LeeMatrix, coord begin, coord target, std::queue<coord> &path);
+void Backtrack(std::vector<std::vector<int>> &LeeMatrix, const Matrix &map, coord begin, coord target, std::queue<coord> &path);
 
-coord GetPrevious(std::vector<std::vector<int>> &LeeMatrix, coord begin);
+coord GetPrevious(std::vector<std::vector<int>> &LeeMatrix, const Matrix &map, coord begin);
 
 
 
